@@ -351,7 +351,7 @@ void callbackMqttBroker(char* topic, byte* payload, unsigned int length){
                             tx_frame.data.u8[0] = device_id[i];
                             tx_frame.data.u8[1] = MSG_PERCENT_LOW;
                             tx_frame.data.u8[2] = percentSlow[0];
-                            tx_frame.data.u8[3] = percentSlow[0];
+                            tx_frame.data.u8[3] = percentSlow[1];
                             ESP32Can.CANWriteFrame(&tx_frame);
                         }
                         else if(dataType == "changedelayanalog"){
@@ -388,8 +388,18 @@ void callbackMqttBroker(char* topic, byte* payload, unsigned int length){
                             tx_frame.data.u8[2] = Strtimeautoclose.toInt();;
                             ESP32Can.CANWriteFrame(&tx_frame);
                         }
+                        else if(dataType == "stopspeed"){
+                            String Strstopspeed = rootData["data"];
+                            CAN_frame_t tx_frame;
+                            tx_frame.FIR.B.FF = CAN_frame_std;
+                            tx_frame.MsgID = MSG_MASTER_ID;
+                            tx_frame.FIR.B.DLC = 3;
+                            tx_frame.data.u8[0] = device_id[i];
+                            tx_frame.data.u8[1] = MSG_MIN_STOP_SPEED;
+                            tx_frame.data.u8[2] = Strstopspeed.toInt();;
+                            ESP32Can.CANWriteFrame(&tx_frame);
+                        }
 
-                        
 
                     }
                 }
